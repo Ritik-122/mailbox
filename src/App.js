@@ -1,8 +1,20 @@
+import { Route, Switch } from "react-router-dom";
+import SignUp from "./Login/Signup";
+import SignIn from "./Login/Login";
 
 function App() {
   return (
    <>
-    <h1>Hello</h1>
+   <Switch>
+
+   <Route path='/' exact>
+    <SignUp/>
+   </Route>
+   <Route path='/login' exact>
+    <SignIn/>
+   </Route>
+   </Switch>
+
    </>
   );
 }
