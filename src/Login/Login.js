@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import { useSelector,useDispatch } from "react-redux";
+import { authActions } from '../store/redux';
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -47,7 +50,38 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn() {
+  const dispatch=useDispatch()
   const classes = useStyles();
+const history=useHistory()
+
+  const email = useRef("");
+  const password = useRef("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const obj = {
+      email: email.current.value,
+      password: password.current.value,
+      returnSecureToken: true,
+    };
+   
+    
+    try {
+      const res=await axios.post(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAIaqvg5aEgRrt8nqogoznoNanTgN3thhY",
+        obj
+      );
+      
+       if(res.status===200){
+        
+        localStorage.setItem('Token',res.data.idToken)
+        dispatch(authActions.login(res.data.idToken))
+        history.replace('/welcome')
+
+       }
+    } catch (error) {
+      alert(error.response.data.error.message);
+    }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,7 +93,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -70,6 +104,7 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            inputRef={email}
           />
           <TextField
             variant="outlined"
@@ -81,6 +116,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            inputRef={password}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
