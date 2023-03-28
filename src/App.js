@@ -6,9 +6,13 @@ import { useSelector} from "react-redux";
 function App() {
   const status=useSelector((state)=>state.auth.token)
   const isLoggedIn=status?true:false
+  console.log(isLoggedIn)
   return (
     <>
       <Switch>
+      {isLoggedIn && <Route path="/" exact>
+          <Redirect to='/welcome'/>
+        </Route>}
         {!isLoggedIn && <Route path="/" exact>
           <SignUp />
         </Route>}

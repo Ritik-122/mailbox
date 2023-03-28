@@ -74,6 +74,7 @@ const history=useHistory()
        if(res.status===200){
         
         localStorage.setItem('Token',res.data.idToken)
+        localStorage.setItem('Email',res.data.email)
         dispatch(authActions.login(res.data.idToken))
         history.replace('/welcome')
 
