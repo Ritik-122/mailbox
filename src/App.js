@@ -3,6 +3,8 @@ import SignUp from "./Login/Signup";
 import SignIn from "./Login/Login";
 import Welcome from "./Welcome/Welcome";
 import { useSelector} from "react-redux";
+import Inbox from "./Inbox/Inbox";
+import Sent from "./Sent/Sent";
 function App() {
   const status=useSelector((state)=>state.auth.token)
   const isLoggedIn=status?true:false
@@ -26,6 +28,12 @@ function App() {
         {!isLoggedIn && <Route path="/welcome" exact>
           <Redirect to='/login'/>
         </Route>}
+        <Route path='/inbox'>
+          <Inbox/>
+        </Route>
+        <Route path='/sent'>
+          <Sent/>
+        </Route>
       </Switch>
     </>
   );
