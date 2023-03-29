@@ -1,4 +1,4 @@
-import { CssBaseline, Toolbar, Typography } from "@material-ui/core";
+import {  CssBaseline, Toolbar, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
 import axios from "axios";
@@ -10,8 +10,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
+import Button from '@mui/material/Button';
+import { useDispatch, useSelector } from "react-redux";
+import { mailActions } from "../store/redux";
+import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
 export default function Inbox() {
+
+  const [trigger,setTrigger]=useState(false)
+
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -30,8 +36,48 @@ export default function Inbox() {
       border: 0,
     },
   }));
+  
+  const inboxMail=useSelector((state)=>state.mail.mail)
+  const dispatch=useDispatch()
   let email_id = localStorage.getItem("Email");
-  const [apiData, setApiData] = useState([]);
+
+  const  handleView=async (id)=>{
+    try{
+      email_id = email_id.replace("@", "");
+      email_id = email_id.replace(".", "");
+      const res = await axios.patch(
+        `https://mailbox-b9a09-default-rtdb.firebaseio.com/receiver/${email_id}/${id}.json`,{isRead:true}
+      );
+      if(res.status===200){
+        console.log('viewed mail',res.data)
+        setTrigger(!trigger)
+        dispatch(mailActions.inbox([...res.data]))
+  
+      }
+      }catch(error){
+        alert(error.response.data.error.message);
+      }
+    
+  
+  }
+  const handleDelete=async(id)=>
+{
+  try{
+    email_id = email_id.replace("@", "");
+    email_id = email_id.replace(".", "");
+    const res = await axios.delete(
+      `https://mailbox-b9a09-default-rtdb.firebaseio.com/receiver/${email_id}/${id}.json`
+    );
+    if(res.status===200){
+      console.log('Deleted mail',res.data)
+      setTrigger(!trigger)
+
+    }
+    }catch(error){
+      alert(error.response.data.error.message);
+    }
+
+}
   useEffect(() => {
     async function fetchingMail() {
       email_id = email_id.replace("@", "");
@@ -43,8 +89,10 @@ export default function Inbox() {
       );
       if(res.status===200){
       
-        setApiData(Object.values(res.data))
        
+        const newArr1 = Object.values(res.data).map((v,index) => ({...v, id: Object.keys(res.data)[index]}))
+        
+        dispatch(mailActions.getMail(newArr1))
 
       }
       }catch(error){
@@ -52,7 +100,10 @@ export default function Inbox() {
       }
     }
     fetchingMail();
-  }, []);
+  }, [dispatch,trigger]);
+  
+
+
 
   return (
     <>
@@ -69,16 +120,22 @@ export default function Inbox() {
               <StyledTableCell>From:&nbsp;</StyledTableCell>
               <StyledTableCell>Subject&nbsp;</StyledTableCell>
               <StyledTableCell>Message</StyledTableCell>
+              <StyledTableCell>{'     '}</StyledTableCell>
+              <StyledTableCell>{'     '}</StyledTableCell>
+              <StyledTableCell>{'     '}</StyledTableCell>
               
             </TableRow>
           </TableHead>
           <TableBody>
-            {apiData.map((row,index) => (
+            {inboxMail.map((row,index) => (
               <StyledTableRow>
               <StyledTableCell>{index+1}</StyledTableCell>
                 <StyledTableCell>{row.from}</StyledTableCell>
                 <StyledTableCell >{row.subject}</StyledTableCell>
                 <StyledTableCell >{row.message}</StyledTableCell>
+                <StyledTableCell ><Button variant="contained" onClick={()=>handleView(row.id)}>View</Button></StyledTableCell>
+                <StyledTableCell ><Button variant="contained" color="error" onClick={()=>handleDelete(row.id)}>Delete</Button></StyledTableCell>
+                <StyledTableCell >{ row.isRead ?' ':<MarkChatUnreadIcon color="primary"/> }</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

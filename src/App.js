@@ -5,6 +5,7 @@ import Welcome from "./Welcome/Welcome";
 import { useSelector} from "react-redux";
 import Inbox from "./Inbox/Inbox";
 import Sent from "./Sent/Sent";
+import MailDetail from "./MailDetail/MailDetail";
 function App() {
   const status=useSelector((state)=>state.auth.token)
   const isLoggedIn=status?true:false
@@ -33,6 +34,9 @@ function App() {
         </Route>
         <Route path='/sent'>
           <Sent/>
+        </Route>
+        <Route path='/mailDetail'>
+          <MailDetail/>
         </Route>
       </Switch>
     </>

@@ -27,6 +27,7 @@ export default function Welcome() {
       email: email.current.value,
       subject: subject.current.value,
       message: content,
+      isRead:false
     };
 
     email_id = email_id.replace("@", "");
@@ -40,6 +41,7 @@ export default function Welcome() {
         from: localStorage.getItem("Email"),
         message: content,
         subject: subject.current.value,
+        isRead:false
       };
       let recieverEmail=email.current.value
       recieverEmail =  recieverEmail.replace("@", "");

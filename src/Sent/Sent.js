@@ -10,6 +10,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Button from '@mui/material/Button';
+
 export default function Sent() {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -54,22 +56,30 @@ export default function Sent() {
     <>
       <CssBaseline />
       <Header />
+      <Typography variant="h4" style={{ marginTop: "10px" }} align='center' gutterBottom>
+        Sent Mail
+      </Typography>
       <TableContainer component={Paper} style={{ marginTop: "50px" }}>
         <Table sx={{ minWidth: 500 }} aria-label="customized table">
           <TableHead>
             <TableRow>
+            <StyledTableCell>#</StyledTableCell>
               <StyledTableCell>To:&nbsp;</StyledTableCell>
               <StyledTableCell>Subject&nbsp;</StyledTableCell>
               <StyledTableCell>Message</StyledTableCell>
-              {/* <StyledTableCell>#</StyledTableCell> */}
+              <StyledTableCell>{' '}</StyledTableCell>
+              <StyledTableCell>{' '}</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {apiData.map((row) => (
+            {apiData.map((row,index) => (
               <StyledTableRow>
+              <StyledTableCell>{index+1}</StyledTableCell>
                 <StyledTableCell>{row.email}</StyledTableCell>
                 <StyledTableCell >{row.subject}</StyledTableCell>
                 <StyledTableCell >{row.message}</StyledTableCell>
+                <StyledTableCell ><Button variant="contained">View</Button></StyledTableCell>
+                <StyledTableCell ><Button variant="contained" color="error">Delete</Button></StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

@@ -15,9 +15,25 @@ const authSlice = createSlice({
     },
   });
 
-export const authActions=authSlice.actions
 
+const mailSlice=createSlice({
+  name:'mail',
+  initialState:{mail:[],inboxCount:null},
+  reducers:{
+    getMail(state,action){
+      state.mail=action.payload
+
+    },
+    inbox(state,action){
+      state.inbox=action.payload
+    }
+
+  }
+})
+
+export const authActions=authSlice.actions
+export const mailActions=mailSlice.actions
 const store=configureStore({
-    reducer:{auth:authSlice.reducer}
+    reducer:{auth:authSlice.reducer,mail:mailSlice.reducer}
 })
 export default store
