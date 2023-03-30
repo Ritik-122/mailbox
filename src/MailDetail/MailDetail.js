@@ -26,7 +26,7 @@ export default function MailDetail() {
         style={{ marginTop: "100px", marginLeft: "200px" }}
       >
         <Box width="1000px">
-          <Card>
+          <Card variant="outlined">
             <CardContent style={{ backgroundColor: "#2C3333" }}>
             <Typography>
               <Typography variant="h4" component="div" align="center" color='common.white'>
