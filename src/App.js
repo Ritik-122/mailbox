@@ -14,7 +14,7 @@ function App() {
     <>
       <Switch>
       {isLoggedIn && <Route path="/" exact>
-          <Redirect to='/welcome'/>
+          <Redirect to='/inbox'/>
         </Route>}
         {!isLoggedIn && <Route path="/" exact>
           <SignUp />
