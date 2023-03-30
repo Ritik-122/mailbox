@@ -14,9 +14,11 @@ import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from "react-redux";
 import { mailActions } from "../store/redux";
 import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
+import { useHistory } from "react-router-dom";
 export default function Inbox() {
 
   const [trigger,setTrigger]=useState(false)
+  const history=useHistory()
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -42,6 +44,7 @@ export default function Inbox() {
   let email_id = localStorage.getItem("Email");
 
   const  handleView=async (id)=>{
+    history.replace(`/mailDetail/${id}`)
     try{
       email_id = email_id.replace("@", "");
       email_id = email_id.replace(".", "");
@@ -49,13 +52,15 @@ export default function Inbox() {
         `https://mailbox-b9a09-default-rtdb.firebaseio.com/receiver/${email_id}/${id}.json`,{isRead:true}
       );
       if(res.status===200){
-        console.log('viewed mail',res.data)
+        
         setTrigger(!trigger)
-        dispatch(mailActions.inbox([...res.data]))
+        dispatch(mailActions.inbox([res.data]))
+       
+
   
       }
       }catch(error){
-        alert(error.response.data.error.message);
+        alert(error);
       }
     
   
@@ -132,7 +137,7 @@ export default function Inbox() {
               <StyledTableCell>{index+1}</StyledTableCell>
                 <StyledTableCell>{row.from}</StyledTableCell>
                 <StyledTableCell >{row.subject}</StyledTableCell>
-                <StyledTableCell >{row.message}</StyledTableCell>
+                <StyledTableCell >{row.message.slice(0,45)}...</StyledTableCell>
                 <StyledTableCell ><Button variant="contained" onClick={()=>handleView(row.id)}>View</Button></StyledTableCell>
                 <StyledTableCell ><Button variant="contained" color="error" onClick={()=>handleDelete(row.id)}>Delete</Button></StyledTableCell>
                 <StyledTableCell >{ row.isRead ?' ':<MarkChatUnreadIcon color="primary"/> }</StyledTableCell>

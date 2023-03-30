@@ -35,7 +35,7 @@ function App() {
         <Route path='/sent'>
           <Sent/>
         </Route>
-        <Route path='/mailDetail'>
+        <Route path='/mailDetail/:id'>
           <MailDetail/>
         </Route>
       </Switch>

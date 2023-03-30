@@ -11,6 +11,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
 import Header from "../Header/Header";
+import { Box, Card, CardContent } from "@mui/material";
 
 export default function Welcome() {
   let email_id = localStorage.getItem("Email");
@@ -69,6 +70,9 @@ export default function Welcome() {
     <>
       <Header />
       <Container component="main" maxWidth="md" style={{ marginTop: "100px" }}>
+      <Box width="1000px">
+      <Card>
+      <CardContent>
         <form onSubmit={handleSubmit}>
           <Typography variant="subtitle2">From: {email_id}</Typography>
           <TextField
@@ -99,8 +103,9 @@ export default function Welcome() {
           <Button variant="contained" color="primary" type="submit">
             Send
           </Button>
-        </form>
+        </form></CardContent></Card></Box>
       </Container>
+      
     </>
   );
 }

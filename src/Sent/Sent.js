@@ -32,17 +32,41 @@ export default function Sent() {
     },
   }));
   const [apiData, setApiData] = useState([]);
+  const [trigger,setTrigger]=useState(false)
+  let email_id = localStorage.getItem("Email");
+  const handleDelete=async(id)=>
+  
+  {
+    
+    try{
+      email_id = email_id.replace("@", "");
+      email_id = email_id.replace(".", "");
+      const res = await axios.delete(
+        `https://mailbox-b9a09-default-rtdb.firebaseio.com/sender/${email_id}/${id}.json`
+      );
+      if(res.status===200){
+        console.log('Deleted mail',res.data)
+        setTrigger(!trigger)
+  
+      }
+      }catch(error){
+        alert(error.response.data.error.message);
+      }
+  
+  }
+  
   useEffect(() => {
     async function fetchMail() {
       try {
-        let email_id = localStorage.getItem("Email");
+        
         email_id = email_id.replace("@", "");
         email_id = email_id.replace(".", "");
         const res = await axios.get(
           `https://mailbox-b9a09-default-rtdb.firebaseio.com/sender/${email_id}.json`
         );
         if (res.status === 200) {
-          setApiData(Object.values(res.data));
+          const newArr1 = Object.values(res.data).map((v,index) => ({...v, id: Object.keys(res.data)[index]}))
+          setApiData(newArr1);
         }
       } catch (error) {
         alert(error.response.data.error.message);
@@ -50,7 +74,7 @@ export default function Sent() {
     }
 
     fetchMail();
-  }, []);
+  }, [trigger]);
 
   return (
     <>
@@ -67,7 +91,7 @@ export default function Sent() {
               <StyledTableCell>To:&nbsp;</StyledTableCell>
               <StyledTableCell>Subject&nbsp;</StyledTableCell>
               <StyledTableCell>Message</StyledTableCell>
-              <StyledTableCell>{' '}</StyledTableCell>
+              
               <StyledTableCell>{' '}</StyledTableCell>
             </TableRow>
           </TableHead>
@@ -78,8 +102,8 @@ export default function Sent() {
                 <StyledTableCell>{row.email}</StyledTableCell>
                 <StyledTableCell >{row.subject}</StyledTableCell>
                 <StyledTableCell >{row.message}</StyledTableCell>
-                <StyledTableCell ><Button variant="contained">View</Button></StyledTableCell>
-                <StyledTableCell ><Button variant="contained" color="error">Delete</Button></StyledTableCell>
+               
+                <StyledTableCell ><Button variant="contained" color="error" onClick={()=>handleDelete(row.id)}>Delete</Button></StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
